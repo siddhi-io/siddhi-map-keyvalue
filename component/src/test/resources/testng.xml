@@ -19,8 +19,8 @@
 
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Json-Map-Test-Suite">
-    <test name="json-map-tests" enabled="true" preserve-order="true">
+<suite name="KeyValue-Map-Test-Suite">
+    <test name="keyvalue-map-tests" enabled="true" preserve-order="true">
         <classes>
             <class name="org.wso2.extension.siddhi.map.keyvalue.sinkmapper.KeyValueSinkMapperTestCase"/>
             <class name="org.wso2.extension.siddhi.map.keyvalue.sourcemapper.KeyValueSourceMapperTestCase"/>
