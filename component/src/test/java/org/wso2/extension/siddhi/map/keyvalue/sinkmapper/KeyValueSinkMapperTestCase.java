@@ -105,9 +105,8 @@ public class KeyValueSinkMapperTestCase {
                         break;
 
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 6," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 6," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -195,9 +194,8 @@ public class KeyValueSinkMapperTestCase {
 
 
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 3," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -268,9 +266,8 @@ public class KeyValueSinkMapperTestCase {
 
 
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 2," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 2," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -295,9 +292,8 @@ public class KeyValueSinkMapperTestCase {
                         break;
 
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 1," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 1," +
                                 "Received : " + ibmCount.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -371,7 +367,6 @@ public class KeyValueSinkMapperTestCase {
                         map.put("c", 100L);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     case 3:
                         map = new HashMap<>();
                         map.put("a", "WSO2");
@@ -379,7 +374,6 @@ public class KeyValueSinkMapperTestCase {
                         map.put("c", 100L);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     case 4:
                         map = new HashMap<>();
                         map.put("a", "WSO2#$%");
@@ -387,7 +381,6 @@ public class KeyValueSinkMapperTestCase {
                         map.put("c", 100L);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     case 5:
                         map = new HashMap<>();
                         map.put("a", "WSO2");
@@ -395,7 +388,6 @@ public class KeyValueSinkMapperTestCase {
                         map.put("c", 100L);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     case 6:
                         map = new HashMap<>();
                         map.put("a", "IBM");
@@ -403,11 +395,9 @@ public class KeyValueSinkMapperTestCase {
                         map.put("c", 160L);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 6," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 6," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -490,9 +480,8 @@ public class KeyValueSinkMapperTestCase {
                         AssertJUnit.assertEquals(map, msg);
                         break;
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 3," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -569,9 +558,8 @@ public class KeyValueSinkMapperTestCase {
                         AssertJUnit.assertEquals(map, msg);
                         break;
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 3," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -636,11 +624,9 @@ public class KeyValueSinkMapperTestCase {
                         map.put(null, "IBM is here");
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 2," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 2," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 
@@ -709,11 +695,9 @@ public class KeyValueSinkMapperTestCase {
                         map.put("d", 57.678f);
                         AssertJUnit.assertEquals(map, msg);
                         break;
-
                     default:
-                        log.error("Received more than expected number of events. Expected maximum : 2," +
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 2," +
                                 "Received : " + wso2Count.get());
-                        AssertJUnit.fail();
                 }
             }
 

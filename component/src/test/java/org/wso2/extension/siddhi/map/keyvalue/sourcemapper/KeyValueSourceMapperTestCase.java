@@ -83,9 +83,8 @@ public class KeyValueSourceMapperTestCase {
                             AssertJUnit.assertEquals("WSO2@#$%^*", event.getData(0));
                             break;
                         default:
-                            log.error("Received more than expected number of events. Expected maximum : 4," +
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 4," +
                                     "Received : " + count.get());
-                            AssertJUnit.fail();
                     }
                 }
             }
@@ -153,9 +152,8 @@ public class KeyValueSourceMapperTestCase {
                             AssertJUnit.assertEquals("WSO2", event.getData(0));
                             break;
                         default:
-                            log.error("Received more than expected number of events. Expected maximum : 1," +
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 1," +
                                     "Received : " + count.get());
-                            AssertJUnit.fail();
                     }
                 }
             }
@@ -226,9 +224,8 @@ public class KeyValueSourceMapperTestCase {
                             break;
 
                         default:
-                            log.error("Received more than expected number of events. Expected maximum : 3," +
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                     "Received : " + count.get());
-                            AssertJUnit.fail();
                     }
                 }
             }
@@ -303,9 +300,8 @@ public class KeyValueSourceMapperTestCase {
                             AssertJUnit.assertEquals("WSO2@#$%^*", event.getData(0));
                             break;
                         default:
-                            log.error("Received more than expected number of events. Expected maximum : 3," +
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                     "Received : " + count.get());
-                            AssertJUnit.fail();
                     }
                 }
             }
@@ -376,9 +372,8 @@ public class KeyValueSourceMapperTestCase {
                             AssertJUnit.assertEquals(null, event.getData(0));
                             break;
                         default:
-                            log.error("Received more than expected number of events. Expected maximum : 3," +
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
                                     "Received : " + count.get());
-                            AssertJUnit.fail();
                     }
                 }
             }

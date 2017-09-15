@@ -2,7 +2,7 @@ siddhi-map-keyvalue
 ======================================
 
 The **siddhi-map-keyvalue extension** is an extension to <a target="_blank" href="https://wso2.github.io/siddhi">Siddhi</a>
-which is used to convert Key-Value map message to/from Siddhi events.
+that provides functionality to convert events in KeyValue Map format to WSO2Event format and convert back from WSO2Event format to Key Value Map format.
 
 Find some useful links below:
 

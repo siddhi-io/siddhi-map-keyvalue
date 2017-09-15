@@ -117,14 +117,12 @@ public class KeyValueSinkMapper extends SinkMapper {
             for (Map.Entry<String, TemplateBuilder> entry : payloadTemplateBuilderMap.entrySet()) {
                 result.put(entry.getKey(), entry.getValue().build(event));
             }
-
         } else {
             Object data[] = event.getData();
             for (int i = 0; i < data.length; i++) {
                 String attributeName = attributeNameArray[i];
                 result.put(attributeName, data[i]);
             }
-
         }
 
         sinkListener.publish(result);

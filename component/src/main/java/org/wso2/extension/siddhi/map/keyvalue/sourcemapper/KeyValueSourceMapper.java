@@ -248,12 +248,9 @@ public class KeyValueSourceMapper extends SourceMapper {
                             "Hence dropping the message");
                     return null;
             }
-
-
         }
 
         return event;
-
     }
 
     private static class MappingPositionData {
