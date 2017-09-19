@@ -250,6 +250,9 @@ public class KeyValueSourceMapperTestCase {
         msg3.put("volume", 100L);
         InMemoryBroker.publish("stock", msg3);
 
+        String msg4 = "price: 40,volume: 100, price 55.6";
+        InMemoryBroker.publish("stock", msg4);
+
 
         SiddhiTestHelper.waitForEvents(100, 3, count, 200);
 
@@ -259,6 +262,95 @@ public class KeyValueSourceMapperTestCase {
         siddhiAppRuntime.shutdown();
     }
 
+    @Test
+    public void keyvalueSourceMapperDefaultTest4() throws InterruptedException {
+        log.info("KeyValueSourceMapper-Default 4");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='inMemory', topic='stock', @map(type='keyvalue' ,fail.on.missing.attribute='true')) " +
+                "define stream FooStream (symbol string, price float, volume int, state bool, amount long); " +
+                "define stream BarStream (symbol string, price float, volume int, state bool, amount long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("WSO2", event.getData(0));
+                            AssertJUnit.assertEquals(55.6f, event.getData(1));
+                            AssertJUnit.assertEquals(100, event.getData(2));
+                            AssertJUnit.assertEquals(false, event.getData(3));
+                            AssertJUnit.assertEquals(300L, event.getData(4));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 1," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("state", false);
+        msg1.put("symbol", "WSO2");
+        msg1.put("price", 55.6f);
+        msg1.put("volume", 100);
+        msg1.put("amount", 300L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("state", "false");
+        msg2.put("symbol", "WSO2");
+        msg2.put("price", 55.6f);
+        msg2.put("volume", 100);
+        msg2.put("amount", 300L);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("state", false);
+        msg3.put("symbol", "WSO2");
+        msg3.put("price", 55.6);
+        msg3.put("volume", 100);
+        msg3.put("amount", 300L);
+        InMemoryBroker.publish("stock", msg3);
+
+        HashMap<String, Object> msg4 = new HashMap<>();
+        msg4.put("state", false);
+        msg4.put("symbol", "WSO2");
+        msg4.put("price", 55.6f);
+        msg4.put("volume", 100.0f);
+        msg4.put("amount", 300L);
+        InMemoryBroker.publish("stock", msg4);
+
+        HashMap<String, Object> msg5 = new HashMap<>();
+        msg5.put("state", false);
+        msg5.put("symbol", "WSO2");
+        msg5.put("price", 55.6f);
+        msg5.put("volume", 100);
+        msg5.put("amount", 300);
+        InMemoryBroker.publish("stock", msg5);
+
+        SiddhiTestHelper.waitForEvents(100, 1, count, 200);
+
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 1, count.get());
+        siddhiAppRuntime.shutdown();
+    }
 
     /*
     Custom Mapping Data
@@ -402,4 +494,72 @@ public class KeyValueSourceMapperTestCase {
         AssertJUnit.assertEquals("Number of events", 3, count.get());
         siddhiAppRuntime.shutdown();
     }
+
+    @Test
+    public void keyvalueSourceMapperCustomTest3() throws InterruptedException {
+        log.info("test JsonSourceMapper 1");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='inMemory', topic='stock', " +
+                "@map(type='keyvalue', fail.on.missing.attribute='true', " +
+                "@attributes(symbol = 's', price = 'p', volume = 'v')))" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("WSO2@#$%^*", event.getData(0));
+                            AssertJUnit.assertEquals(55.678f, event.getData(1));
+                            AssertJUnit.assertEquals(100L, event.getData(2));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("s", "WSO2");
+        msg1.put("p", 55.6);
+        msg1.put("v", 100L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("s", "WSO2");
+        msg2.put("p", 55.678f);
+        msg2.put("v", 100);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("s", "WSO2@#$%^*");
+        msg3.put("p", 55.678f);
+        msg3.put("v", 100L);
+        InMemoryBroker.publish("stock", msg3);
+
+        SiddhiTestHelper.waitForEvents(100, 1, count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 1, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
 }
