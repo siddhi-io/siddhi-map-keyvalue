@@ -329,12 +329,90 @@ public class KeyValueSinkMapperTestCase {
         stockStream.send(new Object[]{"IBM", 50f, 100L});
 
 
-
         SiddhiTestHelper.waitForEvents(100, 2, wso2Count, 200);
         SiddhiTestHelper.waitForEvents(100, 1, ibmCount, 200);
         //assert event count
         AssertJUnit.assertEquals(2, wso2Count.get());
         AssertJUnit.assertEquals(1, ibmCount.get());
+        siddhiAppRuntime.shutdown();
+
+        //unsubscribe from "inMemory" broker per topic
+        InMemoryBroker.unsubscribe(subscriberWSO2);
+    }
+
+    @Test
+    public void keyvalueSinkMapperDefaultTestCase4() throws InterruptedException {
+        log.info("KeyValueSinkMapper-Default TestCase 4");
+        InMemoryBroker.Subscriber subscriberWSO2 = new InMemoryBroker.Subscriber() {
+            @Override
+            public void onMessage(Object msg) {
+
+                HashMap<String, Object> map;
+                switch (wso2Count.incrementAndGet()) {
+                    case 1:
+                        map = new HashMap<>();
+                        map.put("symbol", "WSO2");
+                        map.put("price", 55.6);
+                        map.put("volume", 100L);
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+                    case 2:
+                        map = new HashMap<>();
+                        map.put("symbol", "WSO2");
+                        map.put("price", 57.678f);
+                        map.put("volume", 100);
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+
+                    case 3:
+                        map = new HashMap<>();
+                        map.put("symbol", 123);
+                        map.put("price", 50f);
+                        map.put("volume", 100L);
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+
+                    default:
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 6," +
+                                "Received : " + wso2Count.get());
+                }
+            }
+
+            @Override
+            public String getTopic() {
+                return "WSO2";
+            }
+        };
+
+        //subscribe to "inMemory" broker per topic
+        InMemoryBroker.subscribe(subscriberWSO2);
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "@sink(type='inMemory', topic='WSO2', @map(type='keyvalue')) " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+        InputHandler stockStream = siddhiAppRuntime.getInputHandler("FooStream");
+
+        siddhiAppRuntime.start();
+
+
+        stockStream.send(new Object[]{"WSO2", 55.6, 100L});
+        stockStream.send(new Object[]{"WSO2", 57.678f, 100});
+        stockStream.send(new Object[]{123, 50f, 100L});
+
+        SiddhiTestHelper.waitForEvents(100, 3, wso2Count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals(3, wso2Count.get());
         siddhiAppRuntime.shutdown();
 
         //unsubscribe from "inMemory" broker per topic
@@ -740,5 +818,82 @@ public class KeyValueSinkMapperTestCase {
         //unsubscribe from "inMemory" broker per topic
         InMemoryBroker.unsubscribe(subscriberWSO2);
     }
+
+    @Test
+    public void keyvalueSinkMapperCustomTestCase6() throws InterruptedException {
+        log.info("KeyValueSinkMapper-Custom TestCase 6");
+        InMemoryBroker.Subscriber subscriberWSO2 = new InMemoryBroker.Subscriber() {
+            @Override
+            public void onMessage(Object msg) {
+
+                HashMap<String, Object> map;
+                switch (wso2Count.incrementAndGet()) {
+                    case 1:
+                        map = new HashMap<>();
+                        map.put("a", "WSO2");
+                        map.put("b", 55.6);
+                        map.put("c", 100L);
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+                    case 2:
+                        map = new HashMap<>();
+                        map.put("a", "WSO2");
+                        map.put("b", 57.678f);
+                        map.put("c", 100);
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+                    case 3:
+                        map = new HashMap<>();
+                        map.put("a", 123);
+                        map.put("b", 50f);
+                        map.put("c", "value");
+                        AssertJUnit.assertEquals(map, msg);
+                        break;
+                    default:
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 6," +
+                                "Received : " + wso2Count.get());
+                }
+            }
+
+            @Override
+            public String getTopic() {
+                return "WSO2";
+            }
+        };
+
+        //subscribe to "inMemory" broker per topic
+        InMemoryBroker.subscribe(subscriberWSO2);
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "@sink(type='inMemory', topic='WSO2', @map(type='keyvalue', @payload(a='symbol',b='price',c='volume')))"
+                + " define stream `from` (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into `from`; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+        InputHandler stockStream = siddhiAppRuntime.getInputHandler("FooStream");
+
+        siddhiAppRuntime.start();
+
+
+        stockStream.send(new Object[]{"WSO2", 55.6, 100L});
+        stockStream.send(new Object[]{"WSO2", 57.678f, 100});
+        stockStream.send(new Object[]{123, 50f, "value"});
+
+        SiddhiTestHelper.waitForEvents(100, 3, wso2Count, 200);
+        //assert event count
+        AssertJUnit.assertEquals(3, wso2Count.get());
+        siddhiAppRuntime.shutdown();
+
+        //unsubscribe from "inMemory" broker per topic
+        InMemoryBroker.unsubscribe(subscriberWSO2);
+    }
+
 
 }
