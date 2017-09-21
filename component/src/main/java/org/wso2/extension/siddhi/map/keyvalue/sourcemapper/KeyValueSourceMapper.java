@@ -42,18 +42,17 @@ import java.util.Map;
 @Extension(
         name = "keyvalue",
         namespace = "sourceMapper",
-        description = "Key-Value Map to Event input mapper. Transports which accepts key value maps can utilize this"
-                + " extension to convert the incoming key value pairs to Siddhi event. Users can either send predefined"
-                + " keys where conversion will happen without any configs or can use custom keys to map from message",
+        description = "`Key-Value Map to Event` input mapper extension allows transports that accept events as key " +
+                "value maps to convert those events to Siddhi events. You can either receive pre-defined keys where " +
+                "conversion takes place without extra configurations, or use custom keys to map from the message.",
         parameters = {
                 @Parameter(name = "fail.on.missing.attribute",
-                        description = "This can either have value true or false. By default it will be true. This "
-                                + "attribute allows user to handle unknown attributes. By default if a key is missing"
-                                + " in a message Stream Processor will drop that message. However setting this"
-                                + " property to "
-                                + "false will prompt Stream Processor to send an event with null value to Siddhi "
-                                + "where user "
-                                + "can handle it accordingly",
+                        description = " If this parameter is set to `true`, if an event arrives without a matching " +
+                                "key for a specific attribute in the connected stream, it is dropped and not " +
+                                "processed by the Stream Processor. If this parameter is set to `false` the Stream " +
+                                "Processor adds the required key to such events with a null value, and the event is " +
+                                "converted to a Siddhi event so that you could handle them as required before they " +
+                                "are further processed.",
                         defaultValue = "true",
                         optional = true,
                         type = {DataType.BOOL})
@@ -62,10 +61,10 @@ import java.util.Map;
                 @Example(
                         syntax = "@source(type='inMemory', topic='stock', @map(type='keyvalue'))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
-                        description = "Above configuration will do a default key value input mapping. Expected "
-                                + "input will be a Map as follows,"
-                                + "symbol: 'WSO2'"
-                                + "price: 55.6f"
+                        description = "This query performs a default key value input mapping. The expected "
+                                + "input is a map similar to the following:\n"
+                                + "symbol: 'WSO2'\n"
+                                + "price: 55.6f\n"
                                 + "volume: 100"
                 ),
                 @Example(
@@ -73,10 +72,11 @@ import java.util.Map;
                                 "@map(type='keyvalue', fail.on.missing.attribute='true', " +
                                 "@attributes(symbol = 's', price = 'p', volume = 'v')))" +
                                 "define stream FooStream (symbol string, price float, volume long); ",
-                        description = "Above configuration will do a custom key value input mapping. Expected input"
-                                + "will be a Map as follows,"
-                                + "s: 'WSO2'"
-                                + "p: 55.6"
+                        description = "This query performs a custom key value input mapping. The matching keys " +
+                                "for the `symbol`, `price` and `volume` attributes are be `s`, `p, and `v` " +
+                                "respectively.  The expected input is a map similar to the following:\n"
+                                + "s: 'WSO2'\n"
+                                + "p: 55.6\n"
                                 + "v: 100"
                 )
 
