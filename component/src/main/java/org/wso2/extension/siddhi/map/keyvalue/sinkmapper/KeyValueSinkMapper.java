@@ -38,17 +38,18 @@ import java.util.Map;
 @Extension(
         name = "keyvalue",
         namespace = "sinkMapper",
-        description = "Event to Key-Value Map output mapper. Transports which publish messages can utilize this "
-                + "extension to convert the Siddhi event to Key-Value Map message. Users can either user " +
-                "predefined keys and values or use custom keys and values",
+        description = "The `Event to Key-Value Map` output mapper extension allows you to convert Siddhi events " +
+                "processed by WSO2 SP to key-value map events before publishing them. You can either use " +
+                "pre-defined keys where conversion takes place without extra configurations, or use custom keys " +
+                "with which the messages can be published.",
         examples = {
                 @Example(
                         syntax = "@sink(type='inMemory', topic='stock', @map(type='keyvalue'))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
-                        description = "Above configuration will perform a default Key-Value output mapping."
-                                + "Expected output will be a Map as follows,"
-                                + "symbol:'WSO2'"
-                                + "price : 55.6f"
+                        description = "This query performs a default Key-Value output mapping. The expected output " +
+                                "is something similar to the following:"
+                                + "symbol:'WSO2'\n"
+                                + "price : 55.6f\n"
                                 + "volume: 100L"
                 ),
 
@@ -56,11 +57,12 @@ import java.util.Map;
                         syntax = "@sink(type='inMemory', topic='stock', @map(type='keyvalue', "
                                 + "@payload(a='symbol',b='price',c='volume')))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
-                        description = "Above configuration will perform a custom Key-Value output mapping where values"
-                                + "values are passed as objects"
-                                + "Expected output will be a Map as follows,"
-                                + "a:'WSO2'"
-                                + "b : 55.6f"
+                        description = "This query performs a custom Key-Value output mapping where values are passed" +
+                                " as objects. Values for `symbol`, `price`, and `volume` attributes are published " +
+                                "with the keys `a`, `b` and `c` respectively. The expected output is a map similar " +
+                                "to the following:\n"
+                                + "a:'WSO2'\n"
+                                + "b : 55.6f\n"
                                 + "c: 100L"
                 ),
 
@@ -68,11 +70,11 @@ import java.util.Map;
                         syntax = "@sink(type='inMemory', topic='stock', @map(type='keyvalue', "
                                 + "@payload(a='{{symbol}} is here',b='`price`',c='volume')))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
-                        description = "Above configuration will perform a custom Key-Value output mapping where values"
-                                + "of a,b are Strings and c is object"
-                                + "Expected output will be a Map as follows,"
-                                + "a:'WSO2 is here'"
-                                + "b : 'price'"
+                        description = "This query performs a custom Key-Value output mapping where the values of " +
+                                "the `a` and `b` attributes are strings and c is object. The expected output should " +
+                                "be a Map similar to the following:"
+                                + "a:'WSO2 is here'\n"
+                                + "b : 'price'\n"
                                 + "c: 100L"
                 )
         }
