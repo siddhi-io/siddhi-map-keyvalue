@@ -12,7 +12,7 @@ Find some useful links below:
 
 ## Latest API Docs
 
-Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/siddhi-map-keyvalue/api/1.0.2-SNAPSHOT">1.0.2-SNAPSHOT</a>.
+Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/siddhi-map-keyvalue/api/1.0.2">1.0.2</a>.
 
 ## How to use
 
@@ -46,8 +46,6 @@ Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/si
 
 ## Features
 
-* <a target="_blank" href="https://wso2-extensions.github.io/siddhi-map-keyvalue/api/1.0.2-SNAPSHOT/#keyvalue-source-mapper">keyvalue</a> *(<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#source-mappers">Source Mapper</a>)*<br><div style="padding-left: 1em;"><p><code>Key-Value Map to Event</code> input mapper extension allows transports that accept events as key value maps to convert those events to Siddhi events. You can either receive pre-defined keys where conversion takes place without extra configurations, or use custom keys to map from the message.</p></div>
-* <a target="_blank" href="https://wso2-extensions.github.io/siddhi-map-keyvalue/api/1.0.2-SNAPSHOT/#keyvalue-sink-mapper">keyvalue</a> *(<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#sink-mappers">Sink Mapper</a>)*<br><div style="padding-left: 1em;"><p>The <code>Event to Key-Value Map</code> output mapper extension allows you to convert Siddhi events processed by WSO2 SP to key-value map events before publishing them. You can either use pre-defined keys where conversion takes place without extra configurations, or use custom keys with which the messages can be published.</p></div>
 
 ## How to Contribute
 
