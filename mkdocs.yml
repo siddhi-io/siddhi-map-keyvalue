@@ -16,6 +16,6 @@ pages:
 - Welcome to WSO2 Siddhi Map KeyValue: index.md
 - API Docs:
   - 1.0.0-SNAPSHOT: api/1.0.0-SNAPSHOT.md
-  - 1.0.1-SNAPSHOT: api/1.0.1-SNAPSHOT.md
+  - 1.0.2-SNAPSHOT: api/1.0.2-SNAPSHOT.md
 - License: license.md
 theme: material
