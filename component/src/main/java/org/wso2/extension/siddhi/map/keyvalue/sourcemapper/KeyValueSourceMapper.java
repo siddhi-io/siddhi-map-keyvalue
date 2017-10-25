@@ -136,6 +136,11 @@ public class KeyValueSourceMapper extends SourceMapper {
 
     }
 
+    @Override
+    protected boolean allowNullInTransportProperties() {
+        return !failOnMissingAttribute;
+    }
+
     private Event createEventForMapping(Object eventObject) {
         if (eventObject == null) {
             log.error("Null object received");
