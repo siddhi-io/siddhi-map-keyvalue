@@ -33,6 +33,9 @@ import org.wso2.siddhi.core.util.transport.OptionHolder;
 import org.wso2.siddhi.query.api.definition.Attribute;
 import org.wso2.siddhi.query.api.definition.StreamDefinition;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -124,7 +127,7 @@ public class KeyValueSourceMapper extends SourceMapper {
 
     @Override
     public Class[] getSupportedInputEventClasses() {
-        return new Class[]{Map.class};
+        return new Class[]{Map.class, byte[].class};
     }
 
     @Override
@@ -133,7 +136,6 @@ public class KeyValueSourceMapper extends SourceMapper {
         if (convertedEvent != null) {
             inputEventHandler.sendEvent(convertedEvent);
         }
-
     }
 
     @Override
@@ -142,18 +144,28 @@ public class KeyValueSourceMapper extends SourceMapper {
     }
 
     private Event createEventForMapping(Object eventObject) {
+        Map<String, Object> keyValueEvent = null;
+
         if (eventObject == null) {
             log.error("Null object received");
             return null;
         }
-        if (!(eventObject instanceof Map)) {
+
+        if (eventObject instanceof byte[]) {
+            Object deserializeObject = deserialize((byte[]) eventObject);
+            if (deserializeObject instanceof Map) {
+                keyValueEvent = (Map<String, Object>) deserializeObject;
+            }
+        } else if (eventObject instanceof Map) {
+            keyValueEvent = (Map<String, Object>) eventObject;
+        } else {
             log.error("Invalid Map object received. Expected Map, but found " +
                     eventObject.getClass().getCanonicalName());
             return null;
         }
+
         Event event = new Event(attributesSize);
         Object data[] = event.getData();
-        Map<String, Object> keyValueEvent = (Map<String, Object>) eventObject;
 
         for (MappingPositionData mapData : mappingPositions) {
             int position = mapData.position;
@@ -164,13 +176,13 @@ public class KeyValueSourceMapper extends SourceMapper {
                 if (failOnMissingAttribute) {
                     log.error("Stream \"" + streamDefinition.getId() +
                             "\" has an attribute named \"" + key +
-                            "\", but the received event " + eventObject.toString() +
+                            "\", but the received event " + keyValueEvent.toString() +
                             " does not has a value for that attribute. Hence dropping the message.");
                     return null;
                 } else {
                     log.debug("Stream \"" + streamDefinition.getId() +
                             "\" has an attribute named \"" + key +
-                            "\", but the received event " + eventObject.toString() +
+                            "\", but the received event " + keyValueEvent.toString() +
                             " does not has a value for that attribute. Since fail.on.missing.attribute is false" +
                             "null value inserted");
                     data[position] = null;
@@ -186,7 +198,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Boolean) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type BOOL," +
                                 "Hence dropping the message");
@@ -197,7 +209,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Integer) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type INTEGER," +
                                 "Hence dropping the message");
@@ -208,7 +220,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Double) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type DOUBLE," +
                                 "Hence dropping the message");
@@ -219,7 +231,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof String) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type STRING," +
                                 "Hence dropping the message");
@@ -230,7 +242,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Float) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type FLOAT," +
                                 "Hence dropping the message");
@@ -241,7 +253,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Long) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + eventObject.toString() +
+                        log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type LONG," +
                                 "Hence dropping the message");
@@ -256,6 +268,25 @@ public class KeyValueSourceMapper extends SourceMapper {
         }
 
         return event;
+    }
+
+    /**
+     * Method to deserialize the byte array into the original object.
+     *
+     * @param eventObject byte array to deserialize.
+     * @return Object after deserialized the byte array or null if error is occurred while deserializing the byte array.
+     */
+    private Object deserialize(byte[] eventObject) {
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(eventObject);
+        ObjectInputStream objectInputStream;
+        try {
+            objectInputStream = new ObjectInputStream(byteArrayInputStream);
+            return objectInputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            log.error("Error is encountered when deserialize the byte array to Map Object"
+                    + e.getMessage(), e);
+            return null;
+        }
     }
 
     private static class MappingPositionData {
