@@ -30,6 +30,9 @@ import org.wso2.siddhi.core.util.EventPrinter;
 import org.wso2.siddhi.core.util.SiddhiTestHelper;
 import org.wso2.siddhi.core.util.transport.InMemoryBroker;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -352,6 +355,84 @@ public class KeyValueSourceMapperTestCase {
         siddhiAppRuntime.shutdown();
     }
 
+
+    @Test
+    public void defaultKeyvalueSourceMapperwithBinaryEventTest3() throws InterruptedException, IOException {
+        log.info("KeyValueSourceMapper-Default 3");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='inMemory', topic='stock', @map(type='keyvalue' ,fail.on.missing.attribute='false')) " +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                    case 1:
+                        AssertJUnit.assertEquals(null, event.getData(0));
+                        AssertJUnit.assertEquals(55.6f, event.getData(1));
+                        AssertJUnit.assertEquals(100L, event.getData(2));
+                        break;
+                    case 2:
+                        AssertJUnit.assertEquals(null, event.getData(1));
+                        break;
+
+                    case 3:
+                        AssertJUnit.assertEquals(null, event.getData(0));
+                        break;
+
+                    default:
+                        AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
+                                "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("symbol", null);
+        msg1.put("price", 55.6f);
+        msg1.put("volume", 100L);
+        InMemoryBroker.publish("stock", serialize(msg1));
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("symbol", "WSO2");
+        msg2.put("price", null);
+        msg2.put("volume", 100L);
+        InMemoryBroker.publish("stock", serialize(msg2));
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("price", 50.0f);
+        msg3.put("volume", 100L);
+        InMemoryBroker.publish("stock", serialize(msg3));
+
+        String msg4 = "price: 40,volume: 100, price 55.6";
+        InMemoryBroker.publish("stock", serialize(msg4));
+
+
+        SiddhiTestHelper.waitForEvents(100, 3, count, 200);
+
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 3, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
     /*
     Custom Mapping Data
      */
@@ -560,6 +641,20 @@ public class KeyValueSourceMapperTestCase {
         //assert event count
         AssertJUnit.assertEquals("Number of events", 1, count.get());
         siddhiAppRuntime.shutdown();
+    }
+
+    /**
+     * Method to serialize the object to byte array.
+     *
+     * @param object Object need to be convert to byte array.
+     * @return Byte array after serialize the object
+     * @throws IOException If error is occurred while converting object to byte array.
+     */
+    public static byte[] serialize(Object object) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(object);
+        return byteArrayOutputStream.toByteArray();
     }
 
 }
