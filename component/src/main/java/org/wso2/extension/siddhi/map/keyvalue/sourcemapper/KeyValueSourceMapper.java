@@ -36,6 +36,7 @@ import org.wso2.siddhi.query.api.definition.StreamDefinition;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -91,8 +92,9 @@ public class KeyValueSourceMapper extends SourceMapper {
     private static final Logger log = Logger.getLogger(KeyValueSourceMapper.class);
 
     private StreamDefinition streamDefinition;
-    private MappingPositionData[] mappingPositions;
+    private List<AttributeMapping> attributeMappingList;
     private List<Attribute> streamAttributes;
+    private boolean customMapping = false;
     private boolean failOnMissingAttribute = true;
     private int attributesSize;
 
@@ -102,24 +104,19 @@ public class KeyValueSourceMapper extends SourceMapper {
                      SiddhiAppContext siddhiAppContext) {
 
         this.streamDefinition = streamDefinition;
+        this.attributeMappingList = attributeMappingList;
         this.streamAttributes = this.streamDefinition.getAttributeList();
         this.attributesSize = this.streamDefinition.getAttributeList().size();
-        this.mappingPositions = new MappingPositionData[attributesSize];
         this.failOnMissingAttribute = Boolean.parseBoolean(optionHolder.
                 validateAndGetStaticValue(FAIL_ON_MISSING_ATTRIBUTE_IDENTIFIER, "true"));
 
         if (attributeMappingList != null && attributeMappingList.size() > 0) {
-
-            for (int i = 0; i < attributeMappingList.size(); i++) {
-                AttributeMapping attributeMapping = attributeMappingList.get(i);
-                String attributeName = attributeMapping.getName();
-                int position = this.streamDefinition.getAttributePosition(attributeName);
-                this.mappingPositions[i] = new MappingPositionData(position, attributeMapping.getMapping());
-            }
+            customMapping = true;
         } else {
+            this.attributeMappingList = new ArrayList<>(streamDefinition.getAttributeList().size());
             for (int i = 0; i < attributesSize; i++) {
-                this.mappingPositions[i] = new MappingPositionData(i, this
-                        .streamDefinition.getAttributeList().get(i).getName());
+                String name = this.streamDefinition.getAttributeList().get(i).getName();
+                this.attributeMappingList.add(new AttributeMapping(name, i, name));
             }
         }
     }
@@ -167,31 +164,27 @@ public class KeyValueSourceMapper extends SourceMapper {
         Event event = new Event(attributesSize);
         Object data[] = event.getData();
 
-        for (MappingPositionData mapData : mappingPositions) {
-            int position = mapData.position;
-            String key = mapData.mapping;
+        for (AttributeMapping attributeMapping : attributeMappingList) {
+            int position = attributeMapping.getPosition();
             Attribute.Type type = streamAttributes.get(position).getType();
-            Object value = keyValueEvent.get(key);
-            if (!keyValueEvent.containsKey(key)) {
+            Object value = keyValueEvent.get(attributeMapping.getMapping());
+            if (value == null) {
+                data[position] = null;
                 if (failOnMissingAttribute) {
                     log.error("Stream \"" + streamDefinition.getId() +
-                            "\" has an attribute named \"" + key +
+                            "\" has an attribute named \"" + attributeMapping.getName() +
                             "\", but the received event " + keyValueEvent.toString() +
                             " does not has a value for that attribute. Hence dropping the message.");
                     return null;
                 } else {
                     log.debug("Stream \"" + streamDefinition.getId() +
-                            "\" has an attribute named \"" + key +
+                            "\" has an attribute named \"" + attributeMapping.getName() +
                             "\", but the received event " + keyValueEvent.toString() +
                             " does not has a value for that attribute. Since fail.on.missing.attribute is false" +
                             "null value inserted");
                     data[position] = null;
                     continue;
                 }
-            }
-            if (value == null) {
-                data[position] = null;
-                continue;
             }
             switch (type) {
                 case BOOL:

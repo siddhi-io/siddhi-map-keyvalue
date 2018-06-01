@@ -643,6 +643,207 @@ public class KeyValueSourceMapperTestCase {
         siddhiAppRuntime.shutdown();
     }
 
+    @Test
+    public void keyvalueSourceMapperCustomTest4() throws InterruptedException {
+        log.info("test JsonSourceMapper 4");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='inMemory', topic='stock', " +
+                "@map(type='keyvalue', " +
+                "@attributes('s', 'p', 'v')))" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("WSO2@#$%^*", event.getData(0));
+                            AssertJUnit.assertEquals(55.678f, event.getData(1));
+                            AssertJUnit.assertEquals(100L, event.getData(2));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("s", "WSO2");
+        msg1.put("p", 55.6);
+        msg1.put("v", 100L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("s", "WSO2");
+        msg2.put("p", 55.678f);
+        msg2.put("v", 100);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("s", "WSO2@#$%^*");
+        msg3.put("p", 55.678f);
+        msg3.put("v", 100L);
+        InMemoryBroker.publish("stock", msg3);
+
+        SiddhiTestHelper.waitForEvents(100, 1, count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 1, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
+    @Test
+    public void keyvalueSourceMapperCustomTest5() throws InterruptedException {
+        log.info("test JsonSourceMapper 5");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='testTrpInMemory', topic='stock', prop1='foo', prop2='bar', " +
+                "@map(type='keyvalue', " +
+                "@attributes(symbol = 'trp:symbol', price = 'p', volume = 'v')))" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("foo", event.getData(0));
+                            AssertJUnit.assertEquals(55.678f, event.getData(1));
+                            AssertJUnit.assertEquals(100L, event.getData(2));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("s", "WSO2");
+        msg1.put("p", 55.6);
+        msg1.put("v", 100L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("s", "WSO2");
+        msg2.put("p", 55.678f);
+        msg2.put("v", 100);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("s", "WSO2@#$%^*");
+        msg3.put("p", 55.678f);
+        msg3.put("v", 100L);
+        InMemoryBroker.publish("stock", msg3);
+
+        SiddhiTestHelper.waitForEvents(100, 1, count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 1, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
+    @Test
+    public void keyvalueSourceMapperCustomTest6() throws InterruptedException {
+        log.info("test JsonSourceMapper 6");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='testTrpInMemory', topic='stock', prop1='foo', prop2='bar', " +
+                "@map(type='keyvalue', " +
+                "@attributes('trp:symbol', 'p', 'v')))" +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("foo", event.getData(0));
+                            AssertJUnit.assertEquals(55.678f, event.getData(1));
+                            AssertJUnit.assertEquals(100L, event.getData(2));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 3," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("s", "WSO2");
+        msg1.put("p", 55.6);
+        msg1.put("v", 100L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("s", "WSO2");
+        msg2.put("p", 55.678f);
+        msg2.put("v", 100);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("s", "WSO2@#$%^*");
+        msg3.put("p", 55.678f);
+        msg3.put("v", 100L);
+        InMemoryBroker.publish("stock", msg3);
+
+        SiddhiTestHelper.waitForEvents(100, 1, count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 1, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
     /**
      * Method to serialize the object to byte array.
      *
