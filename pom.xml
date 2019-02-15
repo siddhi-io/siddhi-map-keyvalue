@@ -29,7 +29,7 @@
 
     <groupId>org.wso2.extension.siddhi.map.keyvalue</groupId>
     <artifactId>siddhi-map-keyvalue-parent</artifactId>
-    <version>1.0.19-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>Siddhi KeyValue - Map Extensions</name>
 
     <modules>
@@ -119,7 +119,7 @@
     </build>
 
     <properties>
-        <siddhi.version>4.3.18</siddhi.version>
+        <siddhi.version>4.4.8</siddhi.version>
         <log4j.version>1.2.17.wso2v1</log4j.version>
         <carbon.feature.plugin.version>3.0.0</carbon.feature.plugin.version>
         <testng.version>6.11</testng.version>

@@ -49,7 +49,7 @@ public class KeyValueSourceMapperTestCase {
     Default Mapping Data
      */
     @Test
-    public void keyvalueSourceMapperDefaultTest1() throws InterruptedException {
+    public void keyvalueSourceMapperDefaultTest1() throws Exception {
         log.info("KeyValueSourceMapper-Default 1");
 
         String streams = "" +
@@ -127,7 +127,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperDefaultTest2() throws InterruptedException {
+    public void keyvalueSourceMapperDefaultTest2() throws Exception {
         log.info("KeyValueSourceMapper-Default 1");
 
         String streams = "" +
@@ -189,7 +189,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperDefaultTest3() throws InterruptedException {
+    public void keyvalueSourceMapperDefaultTest3() throws Exception {
         log.info("KeyValueSourceMapper-Default 3");
 
         String streams = "" +
@@ -266,7 +266,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperDefaultTest4() throws InterruptedException {
+    public void keyvalueSourceMapperDefaultTest4() throws Exception {
         log.info("KeyValueSourceMapper-Default 4");
 
         String streams = "" +
@@ -357,7 +357,7 @@ public class KeyValueSourceMapperTestCase {
 
 
     @Test
-    public void defaultKeyvalueSourceMapperwithBinaryEventTest3() throws InterruptedException, IOException {
+    public void defaultKeyvalueSourceMapperwithBinaryEventTest3() throws Exception {
         log.info("KeyValueSourceMapper-Default 3");
 
         String streams = "" +
@@ -437,7 +437,7 @@ public class KeyValueSourceMapperTestCase {
     Custom Mapping Data
      */
     @Test
-    public void keyvalueSourceMapperCustomTest1() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest1() throws Exception {
         log.info("test JsonSourceMapper 1");
 
         String streams = "" +
@@ -508,7 +508,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperCustomTest2() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest2() throws Exception {
         log.info("test JsonSourceMapper 1");
 
         String streams = "" +
@@ -577,7 +577,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperCustomTest3() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest3() throws Exception {
         log.info("test JsonSourceMapper 1");
 
         String streams = "" +
@@ -644,7 +644,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperCustomTest4() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest4() throws Exception {
         log.info("test JsonSourceMapper 4");
 
         String streams = "" +
@@ -711,7 +711,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperCustomTest5() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest5() throws Exception {
         log.info("test JsonSourceMapper 5");
 
         String streams = "" +
@@ -778,7 +778,7 @@ public class KeyValueSourceMapperTestCase {
     }
 
     @Test
-    public void keyvalueSourceMapperCustomTest6() throws InterruptedException {
+    public void keyvalueSourceMapperCustomTest6() throws Exception {
         log.info("test JsonSourceMapper 6");
 
         String streams = "" +
