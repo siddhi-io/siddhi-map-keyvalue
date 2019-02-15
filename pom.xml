@@ -29,7 +29,7 @@
 
     <groupId>org.wso2.extension.siddhi.map.keyvalue</groupId>
     <artifactId>siddhi-map-keyvalue-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>Siddhi KeyValue - Map Extensions</name>
 
     <modules>
@@ -131,7 +131,7 @@
         <url>https://github.com/wso2-extensions/siddhi-map-keyvalue.git</url>
         <developerConnection>scm:git:https://github.com/wso2-extensions/siddhi-map-keyvalue.git</developerConnection>
         <connection>scm:git:https://github.com/wso2-extensions/siddhi-map-keyvalue.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.1.0</tag>
     </scm>
 
 </project>
