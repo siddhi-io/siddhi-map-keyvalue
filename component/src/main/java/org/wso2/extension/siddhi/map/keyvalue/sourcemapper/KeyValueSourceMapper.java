@@ -36,6 +36,8 @@ import org.wso2.siddhi.query.api.definition.StreamDefinition;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -201,6 +203,10 @@ public class KeyValueSourceMapper extends SourceMapper {
                 case INT:
                     if (value instanceof Integer) {
                         data[position] = value;
+                    } else if (value instanceof BigInteger) {
+                        data[position] = ((BigInteger) value).intValue();
+                    } else if (value instanceof BigDecimal) {
+                        data[position] = ((BigDecimal) value).intValue();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
@@ -212,6 +218,10 @@ public class KeyValueSourceMapper extends SourceMapper {
                 case DOUBLE:
                     if (value instanceof Double) {
                         data[position] = value;
+                    } else if (value instanceof BigDecimal) {
+                        data[position] = ((BigDecimal) value).doubleValue();
+                    } else if (value instanceof BigInteger) {
+                        data[position] = ((BigInteger) value).doubleValue();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
@@ -221,8 +231,8 @@ public class KeyValueSourceMapper extends SourceMapper {
                     }
                     break;
                 case STRING:
-                    if (value instanceof String) {
-                        data[position] = value;
+                    if (value instanceof String || value instanceof BigInteger || value instanceof BigDecimal) {
+                        data[position] = value.toString();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
@@ -234,6 +244,10 @@ public class KeyValueSourceMapper extends SourceMapper {
                 case FLOAT:
                     if (value instanceof Float) {
                         data[position] = value;
+                    } else if (value instanceof BigInteger) {
+                        data[position] = ((BigInteger) value).floatValue();
+                    } else if (value instanceof BigDecimal) {
+                        data[position] = ((BigDecimal) value).floatValue();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
@@ -245,6 +259,10 @@ public class KeyValueSourceMapper extends SourceMapper {
                 case LONG:
                     if (value instanceof Long) {
                         data[position] = value;
+                    } else if (value instanceof BigInteger) {
+                        data[position] = ((BigInteger) value).longValue();
+                    } else if (value instanceof BigDecimal) {
+                        data[position] = ((BigDecimal) value).longValue();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
