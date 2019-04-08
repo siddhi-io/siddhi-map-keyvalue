@@ -18,16 +18,16 @@
 
 package org.wso2.extension.siddhi.map.keyvalue.sinkmapper;
 
-import org.wso2.siddhi.annotation.Example;
-import org.wso2.siddhi.annotation.Extension;
-import org.wso2.siddhi.core.config.SiddhiAppContext;
-import org.wso2.siddhi.core.event.Event;
-import org.wso2.siddhi.core.stream.output.sink.SinkListener;
-import org.wso2.siddhi.core.stream.output.sink.SinkMapper;
-import org.wso2.siddhi.core.util.config.ConfigReader;
-import org.wso2.siddhi.core.util.transport.OptionHolder;
-import org.wso2.siddhi.core.util.transport.TemplateBuilder;
-import org.wso2.siddhi.query.api.definition.StreamDefinition;
+import io.siddhi.annotation.Example;
+import io.siddhi.annotation.Extension;
+import io.siddhi.core.config.SiddhiAppContext;
+import io.siddhi.core.event.Event;
+import io.siddhi.core.stream.output.sink.SinkListener;
+import io.siddhi.core.stream.output.sink.SinkMapper;
+import io.siddhi.core.util.config.ConfigReader;
+import io.siddhi.core.util.transport.OptionHolder;
+import io.siddhi.core.util.transport.TemplateBuilder;
+import io.siddhi.query.api.definition.StreamDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
