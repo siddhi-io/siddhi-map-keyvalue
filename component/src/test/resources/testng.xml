@@ -22,8 +22,8 @@
 <suite name="KeyValue-Map-Test-Suite">
     <test name="keyvalue-map-tests" enabled="true" preserve-order="true">
         <classes>
-            <class name="org.wso2.extension.siddhi.map.keyvalue.sinkmapper.KeyValueSinkMapperTestCase"/>
-            <class name="org.wso2.extension.siddhi.map.keyvalue.sourcemapper.KeyValueSourceMapperTestCase"/>
+            <class name="io.siddhi.extension.map.keyvalue.sinkmapper.KeyValueSinkMapperTestCase"/>
+            <class name="io.siddhi.extension.map.keyvalue.sourcemapper.KeyValueSourceMapperTestCase"/>
         </classes>
     </test>
 </suite>
