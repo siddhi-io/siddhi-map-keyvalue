@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.wso2.extension.siddhi.map.keyvalue.sinkmapper;
+package io.siddhi.extension.map.keyvalue.sinkmapper;
 
 import io.siddhi.core.SiddhiAppRuntime;
 import io.siddhi.core.SiddhiManager;
