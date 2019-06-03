@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -263,6 +264,8 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigInteger) value).longValue();
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).longValue();
+                    } else if (value instanceof Timestamp) {
+                        data[position] = ((Timestamp) value).getTime();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
