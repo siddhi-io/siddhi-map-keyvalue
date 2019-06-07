@@ -208,6 +208,8 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigInteger) value).intValue();
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).intValue();
+                    } else if (value instanceof Timestamp) {
+                        data[position] = ((Timestamp) value).getTime();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
