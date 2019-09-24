@@ -69,7 +69,7 @@ import java.util.Map;
                         syntax = "@source(type='inMemory', topic='stock', @map(type='keyvalue'))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
                         description = "This query performs a default key value input mapping. The expected "
-                                + "input is a map similar to the following:\n"
+                                + "input is a map similar to the following: \n"
                                 + "symbol: 'WSO2'\n"
                                 + "price: 55.6f\n"
                                 + "volume: 100"
@@ -80,11 +80,11 @@ import java.util.Map;
                                 "@attributes(symbol = 's', price = 'p', volume = 'v')))" +
                                 "define stream FooStream (symbol string, price float, volume long); ",
                         description = "This query performs a custom key value input mapping. The matching keys " +
-                                "for the `symbol`, `price` and `volume` attributes are be `s`, `p, and `v` " +
-                                "respectively.  The expected input is a map similar to the following:\n"
-                                + "s: 'WSO2'\n"
-                                + "p: 55.6\n"
-                                + "v: 100"
+                                "for the `symbol`, `price` and `volume` attributes are be `s`, `p`, and `v` " +
+                                "respectively. The expected input is a map similar to the following: \n"
+                                + "s: 'WSO2' \n"
+                                + "p: 55.6 \n"
+                                + "v: 100 \n"
                 )
 
         }
