@@ -18,7 +18,7 @@
 define stream FooStream (symbol string, price float, volume long);
 
 ```
-<p style="word-wrap: break-word">This query performs a default Key-Value output mapping. The expected output is something similar to the following:symbol:'WSO2'<br>price : 55.6f<br>volume: 100L</p>
+<p style="word-wrap: break-word">This query performs a default Key-Value output mapping. The expected output is something similar to the following : <br>symbol : 'WSO2'<br>price : 55.6f<br>volume : 100L</p>
 
 <span id="example-2" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">EXAMPLE 2</span>
 ```
@@ -26,7 +26,7 @@ define stream FooStream (symbol string, price float, volume long);
 define stream FooStream (symbol string, price float, volume long);
 
 ```
-<p style="word-wrap: break-word">This query performs a custom Key-Value output mapping where values are passed as objects. Values for <code>symbol</code>, <code>price</code>, and <code>volume</code> attributes are published with the keys <code>a</code>, <code>b</code> and <code>c</code> respectively. The expected output is a map similar to the following:<br>a:'WSO2'<br>b : 55.6f<br>c: 100L</p>
+<p style="word-wrap: break-word">This query performs a custom Key-Value output mapping where values are passed as objects. Values for <code>symbol</code>, <code>price</code>, and <code>volume</code> attributes are published with the keys <code>a</code>, <code>b</code> and <code>c</code> respectively. The expected output is a map similar to the following:<br>a :'WSO2'<br>b : 55.6f<br>c : 100L</p>
 
 <span id="example-3" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">EXAMPLE 3</span>
 ```
@@ -34,7 +34,10 @@ define stream FooStream (symbol string, price float, volume long);
 define stream FooStream (symbol string, price float, volume long);
 
 ```
-<p style="word-wrap: break-word">This query performs a custom Key-Value output mapping where the values of the <code>a</code> and <code>b</code> attributes are strings and c is object. The expected output should be a Map similar to the following:a:'WSO2 is here'<br>b : 'price'<br>c: 100L</p>
+<p>This query performs a custom Key-Value output mapping where the values of the <code>a</code> and <code>b</code> attributes are strings and c is object. The expected output should be a Map similar to the following : <br>
+a : 'WSO2 is here'<br>
+b : 'price'<br>
+c : 100L</p>
 
 ## Sourcemapper
 

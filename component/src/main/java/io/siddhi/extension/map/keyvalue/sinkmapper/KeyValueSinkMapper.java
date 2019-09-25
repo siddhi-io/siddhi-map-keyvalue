@@ -47,9 +47,9 @@ import java.util.Map;
                         syntax = "@sink(type='inMemory', topic='stock', @map(type='keyvalue'))\n"
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
                         description = "This query performs a default Key-Value output mapping. The expected output " +
-                                "is something similar to the following:"
-                                + "symbol:'WSO2'\n"
-                                + "price : 55.6f\n"
+                                "is something similar to the following: \n"
+                                + "symbol:'WSO2' \n"
+                                + "price : 55.6f \n"
                                 + "volume: 100L"
                 ),
 
@@ -60,7 +60,7 @@ import java.util.Map;
                         description = "This query performs a custom Key-Value output mapping where values are passed" +
                                 " as objects. Values for `symbol`, `price`, and `volume` attributes are published " +
                                 "with the keys `a`, `b` and `c` respectively. The expected output is a map similar " +
-                                "to the following:\n"
+                                "to the following: \n"
                                 + "a:'WSO2'\n"
                                 + "b : 55.6f\n"
                                 + "c: 100L"
@@ -72,7 +72,7 @@ import java.util.Map;
                                 + "define stream FooStream (symbol string, price float, volume long);\n",
                         description = "This query performs a custom Key-Value output mapping where the values of " +
                                 "the `a` and `b` attributes are strings and c is object. The expected output should " +
-                                "be a Map similar to the following:"
+                                "be a Map similar to the following: \n"
                                 + "a:'WSO2 is here'\n"
                                 + "b : 'price'\n"
                                 + "c: 100L"
