@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,7 +234,8 @@ public class KeyValueSourceMapper extends SourceMapper {
                     }
                     break;
                 case STRING:
-                    if (value instanceof String || value instanceof BigInteger || value instanceof BigDecimal) {
+                    if (value instanceof String || value instanceof BigInteger || value instanceof BigDecimal ||
+                            value instanceof Time || value instanceof Date || value instanceof Timestamp) {
                         data[position] = value.toString();
                     } else {
                         log.error("Message " + keyValueEvent.toString() +
