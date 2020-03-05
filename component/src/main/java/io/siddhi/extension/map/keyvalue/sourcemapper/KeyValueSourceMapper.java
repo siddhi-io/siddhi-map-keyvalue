@@ -121,7 +121,8 @@ public class KeyValueSourceMapper extends SourceMapper {
             this.attributeMappingList = new ArrayList<>(streamDefinition.getAttributeList().size());
             for (int i = 0; i < attributesSize; i++) {
                 String name = this.streamDefinition.getAttributeList().get(i).getName();
-                this.attributeMappingList.add(new AttributeMapping(name, i, name));
+                Attribute.Type type = this.streamDefinition.getAttributeList().get(i).getType();
+                this.attributeMappingList.add(new AttributeMapping(name, i, name, type));
             }
         }
     }
