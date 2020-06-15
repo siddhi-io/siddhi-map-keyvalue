@@ -29,7 +29,7 @@ import io.siddhi.core.util.transport.OptionHolder;
 import io.siddhi.core.util.transport.TemplateBuilder;
 import io.siddhi.query.api.definition.StreamDefinition;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -112,8 +112,8 @@ public class KeyValueSinkMapper extends SinkMapper {
     public void mapAndSend(Event event, OptionHolder optionHolder,
                            Map<String, TemplateBuilder> payloadTemplateBuilderMap, SinkListener sinkListener) {
 
-        Map<String, Object> result = new HashMap<>();
-
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        
         if (payloadTemplateBuilderMap != null) {
 
             for (Map.Entry<String, TemplateBuilder> entry : payloadTemplateBuilderMap.entrySet()) {
