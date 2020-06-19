@@ -112,7 +112,7 @@ public class KeyValueSinkMapper extends SinkMapper {
     public void mapAndSend(Event event, OptionHolder optionHolder,
                            Map<String, TemplateBuilder> payloadTemplateBuilderMap, SinkListener sinkListener) {
 
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> result = new LinkedHashMap<>();
         
         if (payloadTemplateBuilderMap != null) {
 
