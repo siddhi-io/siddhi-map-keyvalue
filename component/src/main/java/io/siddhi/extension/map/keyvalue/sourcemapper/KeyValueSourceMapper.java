@@ -24,10 +24,12 @@ import io.siddhi.annotation.Parameter;
 import io.siddhi.annotation.util.DataType;
 import io.siddhi.core.config.SiddhiAppContext;
 import io.siddhi.core.event.Event;
+import io.siddhi.core.exception.MappingFailedException;
 import io.siddhi.core.stream.input.source.AttributeMapping;
 import io.siddhi.core.stream.input.source.InputEventHandler;
 import io.siddhi.core.stream.input.source.SourceMapper;
 import io.siddhi.core.util.config.ConfigReader;
+import io.siddhi.core.util.error.handler.model.ErroneousEvent;
 import io.siddhi.core.util.transport.OptionHolder;
 import io.siddhi.query.api.definition.Attribute;
 import io.siddhi.query.api.definition.StreamDefinition;
@@ -134,10 +136,15 @@ public class KeyValueSourceMapper extends SourceMapper {
     }
 
     @Override
-    protected void mapAndProcess(Object eventObject, InputEventHandler inputEventHandler) throws InterruptedException {
-        Event convertedEvent = createEventForMapping(eventObject);
-        if (convertedEvent != null) {
+    protected void mapAndProcess(Object eventObject, InputEventHandler inputEventHandler)
+            throws InterruptedException, MappingFailedException {
+        List<ErroneousEvent> failedEvents = new ArrayList<>(0);
+        try {
+            Event convertedEvent = createEventForMapping(eventObject);
             inputEventHandler.sendEvent(convertedEvent);
+        } catch (MappingFailedException e) {
+            failedEvents.add(new ErroneousEvent(eventObject, e, e.getMessage()));
+            throw new MappingFailedException(failedEvents);
         }
     }
 
@@ -146,14 +153,14 @@ public class KeyValueSourceMapper extends SourceMapper {
         return !failOnMissingAttribute;
     }
 
-    private Event createEventForMapping(Object eventObject) {
+    private Event createEventForMapping(Object eventObject) throws MappingFailedException {
+        String errStr;
         Map<String, Object> keyValueEvent = null;
-
         if (eventObject == null) {
-            log.error("Null object received");
-            return null;
+            errStr = "Null object received. Expected anMap.";
+            log.error(errStr);
+            throw new MappingFailedException(errStr);
         }
-
         if (eventObject instanceof byte[]) {
             Object deserializeObject = deserialize((byte[]) eventObject);
             if (deserializeObject instanceof Map) {
@@ -162,14 +169,13 @@ public class KeyValueSourceMapper extends SourceMapper {
         } else if (eventObject instanceof Map) {
             keyValueEvent = (Map<String, Object>) eventObject;
         } else {
-            log.error("Invalid Map object received. Expected Map, but found " +
-                    eventObject.getClass().getCanonicalName());
-            return null;
+            errStr = "Invalid Map object received. Expected Map, but found " +
+                    eventObject.getClass().getCanonicalName();
+            log.error(errStr);
+            throw new MappingFailedException(errStr);
         }
-
         Event event = new Event(attributesSize);
         Object data[] = event.getData();
-
         for (AttributeMapping attributeMapping : attributeMappingList) {
             int position = attributeMapping.getPosition();
             Attribute.Type type = streamAttributes.get(position).getType();
@@ -177,11 +183,12 @@ public class KeyValueSourceMapper extends SourceMapper {
             if (value == null) {
                 data[position] = null;
                 if (failOnMissingAttribute) {
-                    log.error("Stream \"" + streamDefinition.getId() +
+                    errStr = "Stream \"" + streamDefinition.getId() +
                             "\" has an attribute named \"" + attributeMapping.getName() +
                             "\", but the received event " + keyValueEvent.toString() +
-                            " does not has a value for that attribute. Hence dropping the message.");
-                    return null;
+                            " does not has a value for that attribute. Hence dropping the message.";
+                    log.error(errStr);
+                    throw new MappingFailedException(errStr);
                 } else {
                     log.debug("Stream \"" + streamDefinition.getId() +
                             "\" has an attribute named \"" + attributeMapping.getName() +
@@ -197,11 +204,12 @@ public class KeyValueSourceMapper extends SourceMapper {
                     if (value instanceof Boolean) {
                         data[position] = value;
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type BOOL," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 case INT:
@@ -212,11 +220,12 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).intValue();
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type INTEGER," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 case DOUBLE:
@@ -227,11 +236,12 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (value instanceof BigInteger) {
                         data[position] = ((BigInteger) value).doubleValue();
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type DOUBLE," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 case STRING:
@@ -239,11 +249,12 @@ public class KeyValueSourceMapper extends SourceMapper {
                             value instanceof Time || value instanceof Date || value instanceof Timestamp) {
                         data[position] = value.toString();
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type STRING," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 case FLOAT:
@@ -254,11 +265,12 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).floatValue();
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type FLOAT," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 case LONG:
@@ -271,20 +283,21 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (value instanceof Timestamp) {
                         data[position] = ((Timestamp) value).getTime();
                     } else {
-                        log.error("Message " + keyValueEvent.toString() +
+                        errStr = "Message " + keyValueEvent.toString() +
                                 " contains incompatible attribute types and values. Value " +
                                 value + " is not compatible with type LONG," +
-                                "Hence dropping the message");
-                        return null;
+                                "Hence dropping the message";
+                        log.error(errStr);
+                        throw new MappingFailedException(errStr);
                     }
                     break;
                 default:
-                    log.error("Stream Definition's attribute type, \"" + type + "\", is not supported." +
-                            "Hence dropping the message");
-                    return null;
+                    errStr = "Stream Definition's attribute type, \"" + type + "\", is not supported." +
+                            "Hence dropping the message";
+                    log.error(errStr);
+                    throw new MappingFailedException(errStr);
             }
         }
-
         return event;
     }
 
@@ -294,16 +307,17 @@ public class KeyValueSourceMapper extends SourceMapper {
      * @param eventObject byte array to deserialize.
      * @return Object after deserialized the byte array or null if error is occurred while deserializing the byte array.
      */
-    private Object deserialize(byte[] eventObject) {
+    private Object deserialize(byte[] eventObject) throws MappingFailedException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(eventObject);
         ObjectInputStream objectInputStream;
         try {
             objectInputStream = new ObjectInputStream(byteArrayInputStream);
             return objectInputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            log.error("Error is encountered when deserialize the byte array to Map Object"
-                    + e.getMessage(), e);
-            return null;
+            String errStr = "Error is encountered when deserialize the byte array to Map Object"
+                    + e.getMessage();
+            log.error(errStr, e);
+            throw new MappingFailedException(errStr, e);
         }
     }
 
