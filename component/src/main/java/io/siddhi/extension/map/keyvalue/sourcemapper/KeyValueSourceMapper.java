@@ -257,8 +257,6 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (implicitCastEnable) {
                         try {
                             data[position] = Integer.parseInt(value.toString());
-                            log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
-                                    " to INT, converted value: " + value.toString());
                         } catch (NumberFormatException e) {
                             errStr = "Message " + keyValueEvent.toString() +
                                     " contains incompatible attribute types and values. Value " +
@@ -286,8 +284,6 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (implicitCastEnable) {
                         try {
                             data[position] = Double.parseDouble(value.toString());
-                            log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
-                                    " to DOUBLE, converted value: " + value.toString());
                         } catch (NumberFormatException e) {
                             errStr = "Message " + keyValueEvent.toString() +
                                     " contains incompatible attribute types and values. Value " +
@@ -328,8 +324,6 @@ public class KeyValueSourceMapper extends SourceMapper {
                     } else if (implicitCastEnable) {
                         try {
                             data[position] = Float.parseFloat(value.toString());
-                            log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
-                                    " to FLOAT, converted value: " + value.toString());
                         } catch (NumberFormatException e) {
                             errStr = "Message " + keyValueEvent.toString() +
                                     " contains incompatible attribute types and values. Value " +
