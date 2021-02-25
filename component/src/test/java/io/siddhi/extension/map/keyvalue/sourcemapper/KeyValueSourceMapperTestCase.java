@@ -1001,6 +1001,84 @@ public class KeyValueSourceMapperTestCase {
         siddhiAppRuntime.shutdown();
     }
 
+    @Test
+    public void keyvalueSourceMapperDefaultTest9() throws Exception {
+        log.info("KeyValueSourceMapper-Forcefully-Cast-Attributes-Test");
+
+        String streams = "" +
+                "@App:name('TestSiddhiApp')" +
+                "@source(type='inMemory', topic='stock', @map(type='keyvalue', forcefully.cast.attribute='true')) " +
+                "define stream FooStream (symbol string, price float, volume long); " +
+                "define stream BarStream (symbol string, price float, volume long); ";
+
+        String query = "" +
+                "from FooStream " +
+                "select * " +
+                "insert into BarStream; ";
+
+        SiddhiManager siddhiManager = new SiddhiManager();
+        SiddhiAppRuntime siddhiAppRuntime = siddhiManager.createSiddhiAppRuntime(streams + query);
+
+        siddhiAppRuntime.addCallback("BarStream", new StreamCallback() {
+
+            @Override
+            public void receive(Event[] events) {
+                EventPrinter.print(events);
+                for (Event event : events) {
+                    switch (count.incrementAndGet()) {
+                        case 1:
+                            AssertJUnit.assertEquals("9001", event.getData(0));
+                            break;
+                        case 2:
+                            AssertJUnit.assertEquals("9002", event.getData(0));
+                            break;
+                        case 3:
+                            AssertJUnit.assertEquals("9003", event.getData(0));
+                            break;
+                        case 4:
+                            AssertJUnit.assertEquals("9004", event.getData(0));
+                            break;
+                        default:
+                            AssertJUnit.fail("Received more than expected number of events. Expected maximum : 4," +
+                                    "Received : " + count.get());
+                    }
+                }
+            }
+        });
+
+        siddhiAppRuntime.start();
+
+        HashMap<String, Object> msg1 = new HashMap<>();
+        msg1.put("symbol", new BigInteger("9001"));
+        msg1.put("price", 55.6);
+        msg1.put("volume", 100L);
+        InMemoryBroker.publish("stock", msg1);
+
+        HashMap<String, Object> msg2 = new HashMap<>();
+        msg2.put("symbol", new BigDecimal("9002"));
+        msg2.put("price", 55.678f);
+        msg2.put("volume", 100);
+        InMemoryBroker.publish("stock", msg2);
+
+        HashMap<String, Object> msg3 = new HashMap<>();
+        msg3.put("symbol", new BigInteger("9003"));
+        msg3.put("price", 55.678);
+        msg3.put("volume", 100);
+        InMemoryBroker.publish("stock", msg3);
+
+        HashMap<String, Object> msg4 = new HashMap<>();
+        msg4.put("symbol", new BigDecimal("9004"));
+        msg4.put("price", 55.678f);
+        msg4.put("volume", 100L);
+        InMemoryBroker.publish("stock", msg4);
+
+        SiddhiTestHelper.waitForEvents(100, 4, count, 200);
+
+        //assert event count
+        AssertJUnit.assertEquals("Number of events", 4, count.get());
+        siddhiAppRuntime.shutdown();
+    }
+
     /**
      * Method to serialize the object to byte array.
      *
