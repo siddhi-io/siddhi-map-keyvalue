@@ -67,7 +67,7 @@ import java.util.Map;
                         defaultValue = "true",
                         optional = true,
                         type = {DataType.BOOL}),
-                @Parameter(name = "forcefully.cast.attribute",
+                @Parameter(name = "implicit.cast.enable",
                         description = " If this parameter is set to `true`, if an event arrives with a different " +
                                 "datatype than the defined in siddhi app, the value will try to cast in to the " +
                                 "provided datatype before it fails ",
@@ -100,7 +100,7 @@ import java.util.Map;
                 @Example(
                         syntax = "@source(type='inMemory', topic='stock', " +
                                 "@map(type='keyvalue', fail.on.missing.attribute='true', " +
-                                "forcefully.cast.attribute='true', " +
+                                "implicit.cast.enable='true', " +
                                 "@attributes(symbol = 's', price = 'p', volume = 'v')))" +
                                 "define stream FooStream (symbol string, price float, volume long); ",
                         description = "This query performs a custom key value input mapping. The matching keys " +
@@ -116,7 +116,7 @@ import java.util.Map;
 public class KeyValueSourceMapper extends SourceMapper {
 
     private static final String FAIL_ON_MISSING_ATTRIBUTE_IDENTIFIER = "fail.on.missing.attribute";
-    private static final String FORCEFULLY_CAST_ATTRIBUTE = "forcefully.cast.attribute";
+    private static final String IMPLICIT_CAST_ENABLE = "implicit.cast.enable";
     private static final Logger log = Logger.getLogger(KeyValueSourceMapper.class);
 
     private StreamDefinition streamDefinition;
@@ -125,7 +125,7 @@ public class KeyValueSourceMapper extends SourceMapper {
     private boolean customMapping = false;
     private boolean failOnMissingAttribute = true;
     private int attributesSize;
-    private boolean enableForceCast = false;
+    private boolean implicitCastEnable = false;
 
     @Override
     public void init(StreamDefinition streamDefinition, OptionHolder optionHolder,
@@ -138,7 +138,7 @@ public class KeyValueSourceMapper extends SourceMapper {
         this.attributesSize = this.streamDefinition.getAttributeList().size();
         this.failOnMissingAttribute = Boolean.parseBoolean(optionHolder.
                 validateAndGetStaticValue(FAIL_ON_MISSING_ATTRIBUTE_IDENTIFIER, "true"));
-        this.enableForceCast = Boolean.parseBoolean(optionHolder.validateAndGetStaticValue(FORCEFULLY_CAST_ATTRIBUTE,
+        this.implicitCastEnable = Boolean.parseBoolean(optionHolder.validateAndGetStaticValue(IMPLICIT_CAST_ENABLE,
                 "false"));
 
         if (attributeMappingList != null && attributeMappingList.size() > 0) {
@@ -227,7 +227,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                 case BOOL:
                     if (value instanceof Boolean) {
                         data[position] = value;
-                    } else if (enableForceCast) {
+                    } else if (implicitCastEnable) {
                         try {
                             data[position] = Boolean.parseBoolean(value.toString());
                         } catch (Exception e) {
@@ -254,7 +254,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigInteger) value).intValue();
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).intValue();
-                    } else if (enableForceCast) {
+                    } else if (implicitCastEnable) {
                         try {
                             data[position] = Integer.parseInt(value.toString());
                             log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
@@ -283,7 +283,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigDecimal) value).doubleValue();
                     } else if (value instanceof BigInteger) {
                         data[position] = ((BigInteger) value).doubleValue();
-                    } else if (enableForceCast) {
+                    } else if (implicitCastEnable) {
                         try {
                             data[position] = Double.parseDouble(value.toString());
                             log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
@@ -325,7 +325,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigInteger) value).floatValue();
                     } else if (value instanceof BigDecimal) {
                         data[position] = ((BigDecimal) value).floatValue();
-                    } else if (enableForceCast) {
+                    } else if (implicitCastEnable) {
                         try {
                             data[position] = Float.parseFloat(value.toString());
                             log.warn("PreQA Patch: forcing data conversion from " + value.getClass().getName() +
@@ -356,7 +356,7 @@ public class KeyValueSourceMapper extends SourceMapper {
                         data[position] = ((BigDecimal) value).longValue();
                     } else if (value instanceof Timestamp) {
                         data[position] = ((Timestamp) value).getTime();
-                    } else if (enableForceCast) {
+                    } else if (implicitCastEnable) {
                         try {
                             data[position] = Long.parseLong(value.toString());
                         } catch (NumberFormatException e) {
