@@ -71,7 +71,7 @@ import java.util.Map;
                         description = " If this parameter is set to `true`, if an event arrives with a different " +
                                 "datatype than the defined in siddhi app, the value will try to cast in to the " +
                                 "provided datatype before it fails ",
-                        defaultValue = "true",
+                        defaultValue = "false",
                         optional = true,
                         type = {DataType.BOOL})
         },
