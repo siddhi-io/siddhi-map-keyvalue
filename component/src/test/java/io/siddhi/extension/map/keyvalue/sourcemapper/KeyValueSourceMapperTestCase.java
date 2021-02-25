@@ -1007,7 +1007,7 @@ public class KeyValueSourceMapperTestCase {
 
         String streams = "" +
                 "@App:name('TestSiddhiApp')" +
-                "@source(type='inMemory', topic='stock', @map(type='keyvalue', forcefully.cast.attribute='true')) " +
+                "@source(type='inMemory', topic='stock', @map(type='keyvalue', implicit.cast.enable='true')) " +
                 "define stream FooStream (symbol string, price float, volume long); " +
                 "define stream BarStream (symbol string, price float, volume long); ";
 
