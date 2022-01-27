@@ -33,7 +33,8 @@ import io.siddhi.core.util.error.handler.model.ErroneousEvent;
 import io.siddhi.core.util.transport.OptionHolder;
 import io.siddhi.query.api.definition.Attribute;
 import io.siddhi.query.api.definition.StreamDefinition;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -117,7 +118,7 @@ public class KeyValueSourceMapper extends SourceMapper {
 
     private static final String FAIL_ON_MISSING_ATTRIBUTE_IDENTIFIER = "fail.on.missing.attribute";
     private static final String IMPLICIT_CAST_ENABLE = "implicit.cast.enable";
-    private static final Logger log = Logger.getLogger(KeyValueSourceMapper.class);
+    private static final Logger log = LogManager.getLogger(KeyValueSourceMapper.class);
 
     private StreamDefinition streamDefinition;
     private List<AttributeMapping> attributeMappingList;

@@ -25,7 +25,8 @@ import io.siddhi.core.event.Event;
 import io.siddhi.core.stream.input.InputHandler;
 import io.siddhi.core.util.SiddhiTestHelper;
 import io.siddhi.core.util.transport.InMemoryBroker;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.AssertJUnit;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -35,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class KeyValueSinkMapperTestCase {
 
-    private static final Logger log = Logger.getLogger(KeyValueSinkMapper.class);
+    private static final Logger log = LogManager.getLogger(KeyValueSinkMapperTestCase.class);
     private AtomicInteger wso2Count = new AtomicInteger(0);
     private AtomicInteger ibmCount = new AtomicInteger(0);
 
